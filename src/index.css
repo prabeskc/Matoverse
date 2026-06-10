@@ -465,26 +465,49 @@
 @media (max-width: 640px) {
   .auth-slider-container {
     border-radius: 16px;
-    min-height: unset;
+    min-height: 535px;
   }
 
-  /* Hide the sliding overlay on mobile – use simple tab approach */
+  /* Hide the sliding overlay on mobile */
   .auth-overlay-container { display: none; }
 
   .auth-form-panel {
-    position: relative;
+    position: absolute;
+    top: 0;
     width: 100%;
-    height: auto;
-    left: unset;
-    transform: none !important;
-    opacity: 1 !important;
-    z-index: 1 !important;
+    height: 100%;
+    left: 0;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease-in-out;
   }
 
-  .auth-sign-in-panel  { display: block; }
-  .auth-sign-up-panel  { display: none; }
-  .auth-sign-up-panel.auth-panel--active { display: block; }
-  .auth-sign-in-panel.auth-panel--shifted { display: none; }
+  /* Sign-in panel responsive states */
+  .auth-sign-in-panel {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+  }
+  .auth-sign-in-panel.auth-panel--shifted {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Sign-up panel responsive states */
+  .auth-sign-up-panel {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .auth-sign-up-panel.auth-panel--active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+    animation: none;
+  }
 
   .auth-form-inner { padding: 32px 24px; }
 }

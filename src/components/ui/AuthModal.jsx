@@ -219,6 +219,20 @@ export default function AuthModal() {
                     : 'SIGN IN'
                   }
                 </button>
+
+                {/* Mobile switch tab toggle */}
+                <div className="block sm:hidden mt-4 text-center">
+                  <p className="text-xs text-slate-500">
+                    Don't have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => switchPanel('signup')}
+                      className="font-bold text-brand-600 hover:text-brand-500 transition-colors focus:outline-none cursor-pointer"
+                    >
+                      Sign Up
+                    </button>
+                  </p>
+                </div>
               </form>
             </div>
 
@@ -276,6 +290,20 @@ export default function AuthModal() {
                     : 'SIGN UP'
                   }
                 </button>
+
+                {/* Mobile switch tab toggle */}
+                <div className="block sm:hidden mt-4 text-center">
+                  <p className="text-xs text-slate-500">
+                    Already have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => switchPanel('login')}
+                      className="font-bold text-brand-600 hover:text-brand-500 transition-colors focus:outline-none cursor-pointer"
+                    >
+                      Sign In
+                    </button>
+                  </p>
+                </div>
               </form>
             </div>
 
