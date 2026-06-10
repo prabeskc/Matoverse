@@ -113,7 +113,13 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-3">
             {/* Cart Button */}
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => {
+                if (!user) {
+                  openAuthModal('login');
+                } else {
+                  setIsCartOpen(true);
+                }
+              }}
               className="group relative p-2.5 rounded-xl bg-white/5 text-slate-300 hover:text-brand-400 hover:bg-brand-500/10 hover:shadow-[0_0_18px_rgba(20,184,166,0.25)] transition-all duration-300 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none cursor-pointer"
               aria-label="View Cart"
             >
@@ -208,7 +214,13 @@ export default function Header() {
           {/* ── Mobile Controls ── */}
           <div className="flex md:hidden items-center gap-2">
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => {
+                if (!user) {
+                  openAuthModal('login');
+                } else {
+                  setIsCartOpen(true);
+                }
+              }}
               className="group relative p-2 rounded-xl bg-white/5 text-slate-300 hover:text-brand-400 hover:bg-brand-500/10 transition-all duration-300 focus:outline-none"
               aria-label="View Cart"
             >

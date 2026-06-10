@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Layers, Clock } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ProductCard({ product, index }) {
   const { addToCart } = useCart();
+  const { user, openAuthModal } = useAuth();
   const gradient = product.color || 'from-brand-600 to-brand-700';
 
   // Persisted wishlist state per product ID
@@ -122,13 +124,25 @@ export default function ProductCard({ product, index }) {
           {/* Action Buttons */}
           <div className="flex gap-3">
             <button
-              onClick={() => addToCart(product, 1, false)}
+              onClick={() => {
+                if (!user) {
+                  openAuthModal('login');
+                } else {
+                  addToCart(product, 1, false);
+                }
+              }}
               className="flex-1 py-2.5 rounded-xl text-xs font-semibold border border-white/8 bg-white/4 text-slate-300 hover:bg-white/10 hover:text-white hover:border-white/15 transition-all duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer text-center"
             >
               Add to Cart
             </button>
             <button
-              onClick={() => addToCart(product, 1, true)}
+              onClick={() => {
+                if (!user) {
+                  openAuthModal('login');
+                } else {
+                  addToCart(product, 1, true);
+                }
+              }}
               className={`flex-1 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r ${gradient} text-white shadow-brand-sm hover:brightness-110 hover:shadow-brand transition-all duration-300 hover:scale-[1.03] active:scale-95 cursor-pointer text-center`}
             >
               Buy Now
