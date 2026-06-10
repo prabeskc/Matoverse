@@ -112,7 +112,7 @@ export default function Home() {
       {/* ─────────────────────────────────────────────────────────
          HERO SECTION
          ───────────────────────────────────────────────────────── */}
-      <section className="relative w-full overflow-hidden min-h-[80vh] flex items-center justify-center py-20 sm:py-32">
+      <section className="relative w-full overflow-hidden min-h-screen flex items-center justify-center py-20 sm:py-32">
         {/* Hero Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <img
