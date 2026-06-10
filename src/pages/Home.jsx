@@ -138,7 +138,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-7 flex flex-col items-center"
+            className="space-y-9 flex flex-col items-center max-w-4xl"
           >
 
             {/* Heading */}
@@ -146,7 +146,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
-              className="text-5xl sm:text-6xl md:text-7xl font-black text-white tracking-tight leading-[1.1] font-display"
+              className="text-5xl sm:text-6xl md:text-7xl font-black text-white tracking-wide leading-[1.2] font-display"
             >
               Automotive 3D
               <br />
@@ -158,7 +158,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.22 }}
-              className="text-slate-200 text-base sm:text-lg max-w-2xl leading-relaxed text-center drop-shadow-md"
+              className="text-slate-300 text-lg sm:text-xl max-w-3xl leading-relaxed text-center drop-shadow-md"
             >
               Custom PLA+ and High-Temp PETG interior mods, motorcycle handlebar mounts, and aerodynamic parts. Engineered for durability and millimeter-perfect fit.
             </motion.p>
@@ -168,7 +168,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-wrap items-center justify-center gap-4 pt-2"
+              className="flex flex-wrap items-center justify-center gap-5 pt-4"
             >
               <Link to="/products" className="btn-primary text-sm py-3 px-6">
                 <span>Browse Products</span>
