@@ -140,16 +140,6 @@ export default function Home() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-7 flex flex-col items-center"
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-brand-500/25 bg-brand-950/60 text-brand-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping-slow" />
-              Workshop Located in Nepal
-            </motion.div>
 
             {/* Heading */}
             <motion.h1
@@ -189,24 +179,7 @@ export default function Home() {
               </Link>
             </motion.div>
 
-            {/* Trust Row */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.45 }}
-              className="flex flex-wrap items-center justify-center gap-6 pt-6 border-t border-white/10 w-full max-w-lg"
-            >
-              {[
-                { icon: Shield, label: 'Quality Guaranteed' },
-                { icon: Zap, label: 'Fast Delivery' },
-                { icon: Star, label: '60+ Happy Clients' },
-              ].map(({ icon: Icon, label }) => (
-                <span key={label} className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
-                  <Icon className="w-3.5 h-3.5 text-brand-400" />
-                  {label}
-                </span>
-              ))}
-            </motion.div>
+
           </motion.div>
         </div>
       </section>
