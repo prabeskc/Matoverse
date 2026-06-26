@@ -5,7 +5,7 @@ import {
   Printer, ChevronRight, ShoppingCart, Zap, Shield, Clock,
 } from 'lucide-react';
 import { motion, useInView, useAnimation } from 'framer-motion';
-import { products } from '../data/products';
+import { products as staticProducts } from '../data/products';
 import { stats } from '../data/testimonials';
 import { useCart } from '../context/CartContext';
 import ProductCard from '../components/ui/ProductCard';
@@ -46,12 +46,6 @@ function AnimatedCounter({ target, suffix = '' }) {
 }
 
 const statIcons = [Package, Star, Layers, Wrench];
-
-// Top 3 products for preview
-const previewProducts = [
-  ...products.filter((p) => p.highlight),
-  ...products.filter((p) => !p.highlight),
-].slice(0, 3);
 
 // HERO_IMAGE is replaced by local import heroBg
 
@@ -100,6 +94,63 @@ const particles = [
 
 export default function Home() {
   const { addToCart } = useCart();
+  const [previewProducts, setPreviewProducts] = useState([]);
+
+  useEffect(() => {
+    const BACKEND_URL = 'http://localhost:5000';
+    const API_BASE = `${BACKEND_URL}/api`;
+    
+    const getCategoryColor = (category) => {
+      const map = {
+        'Home Decor':  'from-brand-600 to-brand-700',
+        'Accessories': 'from-cyan-600 to-teal-700',
+        'Automotive':  'from-slate-600 to-slate-700',
+      };
+      return map[category] || 'from-brand-600 to-brand-700';
+    };
+
+    const normalizeProduct = (p) => ({
+      id: p.id,
+      name: p.title,
+      description: p.description,
+      price: Number(p.price),
+      originalPrice: p.original_price ? Number(p.original_price) : null,
+      image: p.image_url ? (p.image_url.startsWith('/') ? `${BACKEND_URL}${p.image_url}` : p.image_url) : null,
+      badge: p.badge,
+      material: p.material,
+      leadTime: p.lead_time,
+      category: p.category,
+      highlight: p.highlight,
+      inStock: p.in_stock,
+      color: getCategoryColor(p.category),
+    });
+
+    fetch(`${API_BASE}/products`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.status === 'success' && data.data?.products?.length > 0) {
+          const apiProducts = data.data.products.map(normalizeProduct);
+          const filtered = [
+            ...apiProducts.filter((p) => p.highlight),
+            ...apiProducts.filter((p) => !p.highlight),
+          ].slice(0, 3);
+          setPreviewProducts(filtered);
+        } else {
+          useStaticFallback();
+        }
+      })
+      .catch(() => {
+        useStaticFallback();
+      });
+
+    function useStaticFallback() {
+      const filtered = [
+        ...staticProducts.filter((p) => p.highlight),
+        ...staticProducts.filter((p) => !p.highlight),
+      ].slice(0, 3);
+      setPreviewProducts(filtered);
+    }
+  }, []);
 
   return (
     <div className="relative overflow-hidden">

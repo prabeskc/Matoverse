@@ -1,12 +1,14 @@
 import { useState, useCallback } from 'react';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const API_BASE = 'http://localhost:5000/api';
 
 const initialState = {
   name: '',
   email: '',
   subject: '',
   message: '',
+  file: null,
 };
 
 const initialErrors = {
@@ -19,6 +21,7 @@ const initialErrors = {
 export function useContactForm() {
   const [values, setValues] = useState(initialState);
   const [errors, setErrors] = useState(initialErrors);
+  const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -59,13 +62,20 @@ export function useContactForm() {
   }, []);
 
   const handleChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, files } = e.target;
+    if (type === 'file') {
+      setValues((prev) => ({ ...prev, [name]: files ? files[0] : null }));
+    } else {
+      setValues((prev) => ({ ...prev, [name]: value }));
+    }
     // Clear error on change
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
-  }, [errors]);
+    if (submitError) {
+      setSubmitError('');
+    }
+  }, [errors, submitError]);
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -77,11 +87,37 @@ export function useContactForm() {
       }
 
       setIsSubmitting(true);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      setValues(initialState);
+      setSubmitError('');
+
+      try {
+        const formData = new FormData();
+        formData.append('name', values.name);
+        formData.append('email', values.email);
+        formData.append('subject', values.subject);
+        formData.append('message', values.message);
+        if (values.file) {
+          formData.append('file', values.file);
+        }
+
+        const response = await fetch(`${API_BASE}/quotes`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to submit quote request. Please try again.');
+        }
+
+        setIsSuccess(true);
+        setValues(initialState);
+      } catch (err) {
+        console.error('Error submitting quote:', err);
+        setSubmitError(err.message || 'Cannot reach the server. Make sure the backend is running.');
+      } finally {
+        setIsSubmitting(false);
+      }
     },
     [values, validate]
   );
@@ -93,6 +129,7 @@ export function useContactForm() {
   return {
     values,
     errors,
+    submitError,
     isSubmitting,
     isSuccess,
     handleChange,

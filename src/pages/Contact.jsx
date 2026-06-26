@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone, Clock, Send, Loader2, CheckCircle2 } from 'lucide-react';
+import { Mail, MapPin, Phone, Clock, Send, Loader2, CheckCircle2, Paperclip } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useContactForm } from '../hooks/useContactForm';
@@ -80,7 +80,7 @@ const inputClass = (error) =>
 
 export default function Contact() {
   const {
-    values, errors, isSubmitting, isSuccess,
+    values, errors, isSubmitting, isSuccess, submitError,
     handleChange, handleSubmit, dismissSuccess,
   } = useContactForm();
 
@@ -286,6 +286,82 @@ export default function Contact() {
                   className={`${inputClass(errors.message)} resize-none`}
                 />
               </InputField>
+
+              {/* File Attachment */}
+              <div className="space-y-1.5 text-left">
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Attachment (Optional)
+                </label>
+                <div
+                  className={`relative flex flex-col items-center justify-center border border-dashed rounded-xl p-5 text-center transition-all duration-200 ${
+                    values.file
+                      ? 'border-brand-500 bg-brand-950/10'
+                      : 'border-white/10 hover:border-white/20 bg-surface-card/30'
+                  }`}
+                >
+                  <input
+                    type="file"
+                    id="file"
+                    name="file"
+                    onChange={handleChange}
+                    disabled={isSubmitting}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      values.file ? 'bg-brand-500/20 text-brand-400' : 'bg-white/5 text-slate-400'
+                    }`}>
+                      <Paperclip className="w-4.5 h-4.5" />
+                    </div>
+                    {values.file ? (
+                      <div className="space-y-1">
+                        <p className="text-sm font-semibold text-brand-400 truncate max-w-[280px] sm:max-w-[400px]">
+                          {values.file.name}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {(values.file.size / (1024 * 1024)).toFixed(2)} MB
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-slate-300">
+                          Click to upload file
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          STL, OBJ, STEP, images, or PDFs (max. 50MB)
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  {values.file && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const event = {
+                          target: {
+                            name: 'file',
+                            type: 'file',
+                            files: null,
+                          },
+                        };
+                        handleChange(event);
+                      }}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-25 p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {submitError && (
+                <div className="p-3 bg-neon-950/20 border border-neon-500/30 rounded-xl text-xs text-neon-400 text-left flex items-start gap-2 animate-pulse">
+                  <span>⚠</span>
+                  <span>{submitError}</span>
+                </div>
+              )}
 
               {/* Submit */}
               <button

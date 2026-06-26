@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { NavLink, Link } from 'react-router-dom';
-import { Menu, X, ArrowRight, ShoppingBag, Zap, User, LogOut, Settings, Package, ChevronDown } from 'lucide-react';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { Menu, X, ShoppingBag, User, LogOut, Settings, Package, ChevronDown } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,10 +13,11 @@ const navItems = [
 ];
 
 export default function Header() {
-  const [isScrolled,  setIsScrolled]  = useState(false);
-  const [mobileOpen,  setMobileOpen]  = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isScrolled,    setIsScrolled]    = useState(false);
+  const [mobileOpen,    setMobileOpen]    = useState(false);
+  const [dropdownOpen,  setDropdownOpen]  = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
   const { cartCount, setIsCartOpen }  = useCart();
   const { user, openAuthModal, logout } = useAuth();
 
@@ -44,6 +45,7 @@ export default function Header() {
   }, []);
 
   return (
+    <>
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
@@ -57,25 +59,21 @@ export default function Header() {
           {/* ── Logo ── */}
           <Link
             to="/"
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-2.5 group"
             onClick={() => setMobileOpen(false)}
           >
             <div className="relative">
               <img
                 src="/logo.png"
                 alt="Matoverse Logo"
-                className="w-10 h-10 object-contain drop-shadow-[0_0_10px_rgba(13,148,136,0.5)] group-hover:drop-shadow-[0_0_18px_rgba(13,148,136,0.8)] transition-all duration-300"
+                className="w-12 h-12 object-contain drop-shadow-[0_0_12px_rgba(13,148,136,0.5)] group-hover:drop-shadow-[0_0_20px_rgba(13,148,136,0.8)] transition-all duration-300"
               />
             </div>
             <div className="flex items-baseline gap-0.5">
-              <span className="text-lg font-bold text-white tracking-tight font-display">
+              <span className="text-xl md:text-2xl font-bold text-white tracking-tight font-display">
                 Mato<span className="gradient-text-brand">verse</span>
               </span>
             </div>
-            <span className="hidden lg:flex items-center text-[10px] text-slate-500 font-medium tracking-widest uppercase ml-1 border-l border-white/10 pl-3">
-              <Zap className="w-2.5 h-2.5 mr-1 text-brand-500" />
-              3D Printing
-            </span>
           </Link>
 
           {/* ── Desktop Nav ── */}
@@ -170,22 +168,34 @@ export default function Header() {
                         <p className="text-xs text-slate-500 truncate mt-0.5">{user.email}</p>
                       </div>
                       <div className="h-[1px] bg-white/5 mb-1.5" />
-                      
                       {/* Actions */}
-                      <button
-                        onClick={() => { setDropdownOpen(false); alert('My Orders simulation: showing list of mock orders.'); }}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-150 cursor-pointer"
-                      >
-                        <Package className="w-4 h-4 text-slate-400" />
-                        <span>My Orders</span>
-                      </button>
-                      <button
-                        onClick={() => { setDropdownOpen(false); alert('Settings simulation: edit account options.'); }}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-150 cursor-pointer"
-                      >
-                        <Settings className="w-4 h-4 text-slate-400" />
-                        <span>Profile Settings</span>
-                      </button>
+                      {user.role !== 'admin' && (
+                        <>
+                          <button
+                            onClick={() => { setDropdownOpen(false); navigate('/profile?tab=orders'); }}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-150 cursor-pointer"
+                          >
+                            <Package className="w-4 h-4 text-slate-400" />
+                            <span>My Orders</span>
+                          </button>
+                          <button
+                            onClick={() => { setDropdownOpen(false); navigate('/profile?tab=settings'); }}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-150 cursor-pointer"
+                          >
+                            <Settings className="w-4 h-4 text-slate-400" />
+                            <span>Profile Settings</span>
+                          </button>
+                        </>
+                      )}
+                      {user.role === 'admin' && (
+                        <button
+                          onClick={() => { setDropdownOpen(false); navigate('/admin'); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs font-semibold text-brand-400 hover:text-brand-300 hover:bg-brand-500/10 transition-all duration-150 cursor-pointer"
+                        >
+                          <Settings className="w-4 h-4 text-brand-400" />
+                          <span>Admin Dashboard</span>
+                        </button>
+                      )}
                       
                       <div className="h-[1px] bg-white/5 my-1.5" />
                       
@@ -311,20 +321,30 @@ export default function Header() {
                   
                   <div className="grid grid-cols-2 gap-2 pt-1">
                     <button
-                      onClick={() => { setMobileOpen(false); alert('My Orders simulation.'); }}
+                      onClick={() => { setMobileOpen(false); navigate('/profile?tab=orders'); }}
                       className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/8 bg-white/4 text-xs font-semibold text-slate-300 hover:text-white"
                     >
                       <Package className="w-3.5 h-3.5 text-slate-400" />
                       <span>Orders</span>
                     </button>
                     <button
-                      onClick={() => { setMobileOpen(false); alert('Settings simulation.'); }}
+                      onClick={() => { setMobileOpen(false); navigate('/profile?tab=settings'); }}
                       className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/8 bg-white/4 text-xs font-semibold text-slate-300 hover:text-white"
                     >
                       <Settings className="w-3.5 h-3.5 text-slate-400" />
                       <span>Settings</span>
                     </button>
                   </div>
+
+                  {user.role === 'admin' && (
+                    <button
+                      onClick={() => { setMobileOpen(false); navigate('/admin'); }}
+                      className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-brand-500/30 bg-brand-500/10 text-xs font-bold text-brand-400 hover:text-brand-300 w-full transition-colors"
+                    >
+                      <Settings className="w-3.5 h-3.5 text-brand-400" />
+                      <span>Admin Dashboard</span>
+                    </button>
+                  )}
 
                   <button
                     onClick={() => { setMobileOpen(false); logout(); }}
@@ -355,5 +375,6 @@ export default function Header() {
         )}
       </AnimatePresence>
     </header>
+    </>
   );
 }

@@ -6,10 +6,13 @@ import Home from './pages/Home';
 import Products from './pages/Products';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import CartDrawer from './components/cart/CartDrawer';
 import AuthModal from './components/ui/AuthModal';
+import AdminRoute from './components/ui/AdminRoute';
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -61,6 +64,7 @@ function AppLayout() {
           <Route path="/products" element={<Products />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/profile" element={<Profile />} />
           {/* Catch-all redirect to home */}
           <Route path="*" element={<Home />} />
         </Routes>
@@ -77,7 +81,19 @@ export default function App() {
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-          <AppLayout />
+          <Routes>
+            {/* Admin — full-screen, no Header/Footer */}
+            <Route
+              path="/admin/*"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+            {/* Public site */}
+            <Route path="/*" element={<AppLayout />} />
+          </Routes>
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>
