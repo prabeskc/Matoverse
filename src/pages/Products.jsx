@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import ProductCard from '../components/ui/ProductCard';
+import { products as staticProducts } from '../data/products';
 
 const BACKEND_URL = 'http://localhost:5000';
 const API_BASE = `${BACKEND_URL}/api`;
@@ -41,16 +42,38 @@ export default function Products() {
 
   useEffect(() => {
     setLoading(true);
+
+    const useStaticFallback = () => {
+      const mapped = staticProducts.map((p) => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        price: p.price,
+        originalPrice: p.originalPrice || Math.round(p.price * 1.3),
+        image: p.image,
+        badge: p.badge,
+        material: p.material,
+        leadTime: p.leadTime,
+        category: p.category,
+        highlight: p.highlight,
+        inStock: true,
+        color: getCategoryColor(p.category),
+      }));
+      setProducts(mapped);
+    };
+
     fetch(`${API_BASE}/products?_=${Date.now()}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.status === 'success') {
           setProducts(data.data.products.map(normalizeProduct));
         } else {
-          setError('Failed to load products.');
+          useStaticFallback();
         }
       })
-      .catch(() => setError('Cannot reach server. Make sure the backend is running.'))
+      .catch(() => {
+        useStaticFallback();
+      })
       .finally(() => setLoading(false));
   }, []);
 
